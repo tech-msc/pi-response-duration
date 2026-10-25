@@ -4,7 +4,7 @@ A small Pi extension that appends the elapsed time to the transcript after a lon
 
 ## Example
 
-![Pi transcript showing the response duration annotation](assets/worked-underline.png)
+![Pi transcript showing the response duration annotation](https://raw.githubusercontent.com/tech-msc/pi-response-duration/main/assets/worked-underline.png)
 
 ## Behavior
 
@@ -14,9 +14,15 @@ A small Pi extension that appends the elapsed time to the transcript after a lon
 - Rounds up to whole seconds (`31s`, `2m 4s`) and shows the local time using the system locale.
 - The annotation is a custom transcript entry and is not sent back to the model as conversation context.
 
-## Install for personal use
+## Install
 
-Copy this directory to `~/.pi/agent/extensions/response-duration/`. Pi discovers the package manifest and loads `index.ts` automatically on startup. Restart Pi after installing or moving it.
+Install the published npm package with:
+
+```sh
+pi install npm:pi-response-duration
+```
+
+For a manual personal install, copy this directory to `~/.pi/agent/extensions/response-duration/`. Pi discovers the package manifest and loads `index.ts` automatically on startup. Restart Pi after installing or moving it.
 
 Alternatively, from a checkout containing this package, install the local path with:
 
@@ -38,6 +44,6 @@ Preview the npm archive without publishing:
 npm pack --dry-run
 ```
 
-## Publishing checklist
+## Package metadata
 
-No public release has been made. Before publishing to npm, confirm the final package name (and scope, if any) is available, and add the source repository URL/author metadata as desired. The package uses the MIT license. Pi provides `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` at runtime; they are intentionally declared as peer dependencies rather than bundled runtime dependencies.
+The published npm package is [`pi-response-duration`](https://www.npmjs.com/package/pi-response-duration). It uses the MIT license. Pi provides `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` at runtime; they are intentionally declared as peer dependencies rather than bundled runtime dependencies.
