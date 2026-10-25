@@ -1,0 +1,24 @@
+{
+  "name": "pi-response-duration",
+  "version": "1.0.0",
+  "description": "Show how long completed Pi agent responses took in the TUI transcript.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "response-duration"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
