@@ -13,11 +13,14 @@ export default function (pi: ExtensionAPI) {
     startedAt = performance.now();
   });
 
-  pi.registerEntryRenderer<{ duration: string }>(ENTRY_TYPE, (entry, _options, theme) => {
+  pi.registerEntryRenderer<{ duration: string; completedAt?: number }>(ENTRY_TYPE, (entry, _options, theme) => {
     const duration = entry.data?.duration;
     if (!duration) return undefined;
-    const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    return new Text(theme.fg("dim", ` Worked for ${duration} • ${time}`), 0, 0);
+    const completedAt = entry.data?.completedAt;
+    const time = typeof completedAt === "number" && Number.isFinite(completedAt)
+      ? ` • ${new Date(completedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+      : "";
+    return new Text(theme.fg("dim", ` Worked for ${duration}${time}`), 0, 0);
   });
 
   pi.on("agent_before_settle", (event, ctx) => {
@@ -29,7 +32,7 @@ export default function (pi: ExtensionAPI) {
     if (!duration) return;
 
     return {
-      entries: [{ type: "custom", customType: ENTRY_TYPE, data: { duration } }],
+      entries: [{ type: "custom", customType: ENTRY_TYPE, data: { duration, completedAt: Date.now() } }],
     };
   });
 }
