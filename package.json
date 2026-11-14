@@ -1,6 +1,6 @@
 {
   "name": "pi-response-duration",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Show how long completed Pi agent responses took in the TUI transcript.",
   "repository": {
     "type": "git",
