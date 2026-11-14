@@ -1,15 +1,26 @@
 import { Text } from "@earendil-works/pi-tui";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { AgentActivityOutcome, ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { getResponseDuration } from "./duration.js";
 
 const ENTRY_TYPE = "response-duration";
 
 export default function (pi: ExtensionAPI) {
   let startedAt: number | undefined;
+  let outcome: AgentActivityOutcome | undefined;
+
+  const clearTiming = () => {
+    startedAt = undefined;
+    outcome = undefined;
+  };
+
+  pi.on("session_start", clearTiming);
+  pi.on("session_tree", clearTiming);
+  pi.on("session_shutdown", clearTiming);
 
   pi.on("before_agent_start", (event) => {
     // Ignore agent runs started internally by extensions.
     if (event.messageType !== "user") return;
+    clearTiming();
     startedAt = performance.now();
   });
 
@@ -23,16 +34,19 @@ export default function (pi: ExtensionAPI) {
     return new Text(theme.fg("dim", ` Worked for ${duration}${time}`), 0, 0);
   });
 
-  pi.on("agent_before_settle", (event, ctx) => {
+  pi.on("agent_before_settle", (event) => {
+    outcome = event.outcome;
+  });
+
+  pi.on("agent_settled", (event, ctx) => {
     const start = startedAt;
-    startedAt = undefined;
+    const lastOutcome = outcome;
+    clearTiming();
 
     // Show completed user responses in the TUI transcript, not the footer.
-    const duration = getResponseDuration(start, performance.now(), event.outcome, ctx.mode);
+    if (event.aborted) return;
+    const duration = getResponseDuration(start, performance.now(), lastOutcome, ctx.mode);
     if (!duration) return;
-
-    return {
-      entries: [{ type: "custom", customType: ENTRY_TYPE, data: { duration, completedAt: Date.now() } }],
-    };
+    pi.appendEntry(ENTRY_TYPE, { duration, completedAt: Date.now() });
   });
 }

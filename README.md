@@ -8,7 +8,8 @@ A small Pi extension that appends the elapsed time to the transcript after a lon
 
 ## Behavior
 
-- Measures from `before_agent_start` until Pi is about to settle the run. This includes the agent's turns and tool work, rather than only model-generation time.
+- Measures the main agent's observable response from `before_agent_start` (for a `user` run) to `agent_settled`, not from the exact moment the user sends the message. This includes the agent's turns and tool work, including time spent waiting for foreground subagents, rather than only model-generation time.
+- Measures elapsed wall-clock time once, without summing subagent durations. Background jobs may continue after the main agent settles; the annotation does not measure their global completion.
 - Adds an entry only for completed responses that took **more than 30 seconds**.
 - Does not add entries for aborted or failed runs, or outside the interactive TUI.
 - Rounds up to whole seconds (`31s`, `2m 4s`) and shows the local time using the system locale.
